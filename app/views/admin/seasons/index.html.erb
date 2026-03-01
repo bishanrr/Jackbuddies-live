@@ -1,0 +1,20 @@
+<div class="card">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="section-title">Seasons</h2>
+    <%= link_to "New Season", new_admin_season_path(season_id: current_season.id), class: "btn-primary" %>
+  </div>
+  <div class="space-y-2">
+    <% @seasons.each do |season| %>
+      <div class="flex items-center justify-between rounded-xl border border-slate-200 p-3">
+        <div>
+          <p class="font-semibold"><%= season.name %> (<%= season.year %>)</p>
+          <p class="muted">Lock: <%= season.default_lock_minutes %> minutes</p>
+        </div>
+        <div class="flex gap-2">
+          <%= link_to "View", admin_season_path(season, season_id: season.id), class: "btn-secondary" %>
+          <%= link_to "Edit", edit_admin_season_path(season, season_id: season.id), class: "btn-secondary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

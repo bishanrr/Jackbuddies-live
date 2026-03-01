@@ -1,0 +1,86 @@
+<% content_for :title, "Admin" %>
+
+<div class="grid gap-6 lg:grid-cols-2">
+  <section class="card">
+    <h2 class="section-title">Pending Users</h2>
+    <div class="mt-3 space-y-3">
+      <% @pending_users.each do |user| %>
+        <div class="flex items-center justify-between rounded-xl border border-slate-200 p-3 text-sm">
+          <span><%= user.name_or_email %></span>
+          <div class="flex gap-2">
+            <%= button_to "Approve", approve_admin_user_path(user, season_id: current_season.id), method: :patch, class: "btn-primary" %>
+            <%= button_to "Deny", deny_admin_user_path(user, season_id: current_season.id), method: :patch, class: "btn-secondary" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">Tools</h2>
+    <div class="mt-4 grid gap-2">
+      <%= link_to "Manage Users", admin_users_path(season_id: current_season.id), class: "btn-secondary" %>
+      <%= link_to "Manage Seasons", admin_seasons_path(season_id: current_season.id), class: "btn-secondary" %>
+      <%= link_to "Manage Teams", admin_teams_path(season_id: current_season.id), class: "btn-secondary" %>
+      <%= link_to "Manage Matches", admin_matches_path(season_id: current_season.id), class: "btn-secondary" %>
+      <%= link_to "Edit Points Rules", edit_admin_points_rule_path(current_season, season_id: current_season.id), class: "btn-secondary" %>
+      <%= link_to "Manual Adjustments", admin_points_events_path(season_id: current_season.id), class: "btn-secondary" %>
+      <%= link_to "Data Imports", admin_data_imports_path(season_id: current_season.id), class: "btn-secondary" %>
+      <%= button_to "Recalculate Entire Season", admin_recalculate_season_path(current_season, season_id: current_season.id), method: :post, class: "btn-primary", data: { turbo_confirm: "Recalculate all season points?" } %>
+    </div>
+  </section>
+</div>
+
+<section class="card mt-6">
+  <h2 class="section-title">Today Matches Entry</h2>
+  <div class="mt-3 space-y-2 text-sm">
+    <% if @today_matches.any? %>
+      <% @today_matches.each do |match| %>
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-2">
+          <span class="font-semibold">Match <%= match.match_no || "-" %>:</span>
+          <span><%= match.home_team.short_name %> vs <%= match.away_team.short_name %></span>
+          <span class="text-slate-500">(<%= match.match_datetime.strftime("%I:%M %p") %>)</span>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-slate-500">No matches scheduled for today.</p>
+    <% end %>
+  </div>
+
+  <%= form_with url: admin_daily_match_entries_path(season_id: current_season.id), method: :post, local: true, class: "mt-4 space-y-3" do %>
+    <label class="block text-sm font-semibold text-slate-700">Paste Daily Entry</label>
+    <%= text_area_tag :daily_entry_text, @daily_entry_template, rows: 12, class: "w-full rounded-xl border border-slate-300 px-3 py-2 font-mono text-sm" %>
+    <%= submit_tag "Process Daily Entry", class: "btn-primary" %>
+  <% end %>
+
+  <div class="mt-6">
+    <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-700">Processed Entries (Latest Match First)</h3>
+    <div class="mt-3 overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+            <th class="py-2">Match No</th>
+            <th class="py-2">Winner</th>
+            <th class="py-2">Processed At</th>
+            <th class="py-2">Admin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @daily_entries.each do |entry| %>
+            <tr class="border-b border-slate-100">
+              <td class="py-3 font-semibold"><%= entry.match_no %></td>
+              <td class="py-3"><%= entry.winner_team_short_name %></td>
+              <td class="py-3"><%= entry.processed_at.strftime("%Y-%m-%d %I:%M %p") %></td>
+              <td class="py-3"><%= entry.admin_user.name_or_email %></td>
+            </tr>
+          <% end %>
+          <% if @daily_entries.empty? %>
+            <tr>
+              <td class="py-3 text-slate-500" colspan="4">No processed entries yet.</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

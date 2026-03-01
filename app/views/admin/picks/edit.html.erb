@@ -1,0 +1,15 @@
+<div class="card max-w-xl">
+  <h2 class="section-title mb-4">Edit Pick</h2>
+  <p class="muted mb-3"><%= @pick.user.name_or_email %> - <%= @pick.match.home_team.short_name %> vs <%= @pick.match.away_team.short_name %></p>
+  <%= form_with model: [:admin, @pick], local: true, class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :team_id, "Pick Team", class: "block text-sm font-medium" %>
+      <%= f.select :team_id, @teams.map { |t| [t.name, t.id] }, {}, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :reason, class: "block text-sm font-medium" %>
+      <%= f.text_field :reason, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2", placeholder: "Reason for audit log" %>
+    </div>
+    <%= f.submit "Save", class: "btn-primary" %>
+  <% end %>
+</div>

@@ -1,0 +1,41 @@
+<% content_for :title, "Dashboard" %>
+
+<section class="home-hero-page -mx-4 -my-6 px-4 py-8 md:-mx-8 md:px-8">
+  <div class="mt-10">
+    <%= render "shared/gold_pot",
+      current_value: @pot_display_total.to_i,
+      max_value: @pot_max.to_i,
+      title_text: "Season #{@pot_context_year} Jackpot Fill",
+      subtitle_text: "Max Pot (Previous Season): ₹#{number_with_delimiter(@pot_max.to_i)}" %>
+  </div>
+</section>
+
+<div class="card space-y-6">
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Winner</p>
+      <p class="mt-1 text-2xl font-extrabold text-emerald-900"><%= @winner&.user&.name_or_email || "-" %></p>
+      <p class="mt-1 text-sm text-emerald-700"><%= @winner&.points || 0 %> points</p>
+    </div>
+    <div class="rounded-xl border border-sky-200 bg-sky-50 p-4">
+      <p class="text-sm font-semibold uppercase tracking-wide text-sky-700">Runner Up</p>
+      <p class="mt-1 text-2xl font-extrabold text-sky-900"><%= @runner_up&.user&.name_or_email || "-" %></p>
+      <p class="mt-1 text-sm text-sky-700"><%= @runner_up&.points || 0 %> points</p>
+    </div>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+      <p class="text-sm font-semibold uppercase tracking-wide text-amber-700">Top 2</p>
+      <% @top_two.each_with_index do |row, idx| %>
+        <p class="mt-2 text-base font-bold text-amber-900"><%= idx + 1 %>. <%= row.user.name_or_email %> - <%= row.points %></p>
+      <% end %>
+    </div>
+    <div class="rounded-xl border border-rose-200 bg-rose-50 p-4">
+      <p class="text-sm font-semibold uppercase tracking-wide text-rose-700">Least Paid</p>
+      <p class="mt-2 text-base font-bold text-rose-900"><%= @least_paid&.user&.name_or_email || "-" %> - <%= @least_paid&.points || 0 %></p>
+      <p class="mt-4 text-sm font-semibold uppercase tracking-wide text-rose-700">2nd Least Paid</p>
+      <p class="mt-2 text-base font-bold text-rose-900"><%= @second_least_paid&.user&.name_or_email || "-" %> - <%= @second_least_paid&.points || 0 %></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="card overflow-x-auto">
+  <h2 class="section-title mb-4">Users</h2>
+  <table class="min-w-full text-sm">
+    <thead>
+      <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+        <th class="py-2">Name</th><th class="py-2">Email</th><th class="py-2">Role</th><th class="py-2">Status</th><th class="py-2"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr class="border-b border-slate-100">
+          <td class="py-3"><%= user.name_or_email %></td>
+          <td class="py-3"><%= user.email %></td>
+          <td class="py-3"><%= user.role %></td>
+          <td class="py-3"><%= user.status %></td>
+          <td class="py-3 text-right">
+            <%= link_to "Edit", edit_admin_user_path(user, season_id: current_season.id), class: "btn-secondary" %>
+            <%= button_to "Approve", approve_admin_user_path(user, season_id: current_season.id), method: :patch, class: "btn-primary inline-flex" %>
+            <%= button_to "Deny", deny_admin_user_path(user, season_id: current_season.id), method: :patch, class: "btn-secondary inline-flex" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

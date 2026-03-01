@@ -1,0 +1,16 @@
+<% content_for :title, "Home" %>
+
+<section class="home-hero-page -mx-4 -my-6 px-4 py-8 md:-mx-8 md:px-8">
+  <div class="home-copy text-center">
+    <h1 class="text-3xl font-extrabold text-emerald-900 md:text-5xl">welcome to JackBuddies</h1>
+    <p class="mt-3 text-lg font-medium text-amber-800 md:text-xl">where memories are made</p>
+  </div>
+
+  <div class="mt-10">
+    <%= render "shared/gold_pot",
+      current_value: @display_total.to_i,
+      max_value: @target_max.to_i,
+      title_text: "Season #{current_season&.year} Jackpot Fill",
+      subtitle_text: "Max Pot (Previous Season): ₹#{number_with_delimiter(@target_max.to_i)}" %>
+  </div>
+</section>

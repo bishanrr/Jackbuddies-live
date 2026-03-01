@@ -1,0 +1,44 @@
+<div class="card max-w-2xl">
+  <h2 class="section-title mb-4"><%= match.new_record? ? "New Match" : "Edit Match" %></h2>
+  <%= form_with model: [:admin, match], local: true, class: "grid gap-4 md:grid-cols-2" do |f| %>
+    <div>
+      <%= f.label :season_id, class: "block text-sm font-medium" %>
+      <%= f.collection_select :season_id, @seasons, :id, :name, {}, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :match_no, class: "block text-sm font-medium" %>
+      <%= f.number_field :match_no, min: 1, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :title, class: "block text-sm font-medium" %>
+      <%= f.text_field :title, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :home_team_id, class: "block text-sm font-medium" %>
+      <%= f.collection_select :home_team_id, @teams, :id, :name, {}, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :away_team_id, class: "block text-sm font-medium" %>
+      <%= f.collection_select :away_team_id, @teams, :id, :name, {}, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :match_datetime, class: "block text-sm font-medium" %>
+      <%= f.datetime_local_field :match_datetime, value: match.match_datetime&.strftime("%Y-%m-%dT%H:%M"), class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :stage, class: "block text-sm font-medium" %>
+      <%= f.select :stage, Match.stages.keys, {}, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :status, class: "block text-sm font-medium" %>
+      <%= f.select :status, Match.statuses.keys, {}, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :winner_team_id, class: "block text-sm font-medium" %>
+      <%= f.collection_select :winner_team_id, @teams, :id, :name, { include_blank: true }, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div class="md:col-span-2">
+      <%= f.submit "Save", class: "btn-primary" %>
+    </div>
+  <% end %>
+</div>

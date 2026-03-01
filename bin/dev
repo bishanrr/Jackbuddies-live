@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+if gem list --no-installed --exact --silent foreman; then
+  echo "Installing foreman..."
+  gem install foreman
+fi
+
+# Prefer project-compatible Node runtime when available.
+if [ -d "/opt/homebrew/opt/node@20/bin" ]; then
+  export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
+elif [ -d "/usr/local/opt/node@20/bin" ]; then
+  export PATH="/usr/local/opt/node@20/bin:$PATH"
+fi
+
+# Default to port 3000 if not specified
+export PORT="${PORT:-3000}"
+
+exec foreman start -f Procfile.dev --env /dev/null "$@"

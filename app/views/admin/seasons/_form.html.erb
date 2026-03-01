@@ -1,0 +1,18 @@
+<div class="card max-w-xl">
+  <h2 class="section-title mb-4"><%= season.new_record? ? "New Season" : "Edit Season" %></h2>
+  <%= form_with model: [:admin, season], local: true, class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :year, class: "block text-sm font-medium" %>
+      <%= f.number_field :year, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :name, class: "block text-sm font-medium" %>
+      <%= f.text_field :name, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :default_lock_minutes, class: "block text-sm font-medium" %>
+      <%= f.number_field :default_lock_minutes, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <%= f.submit "Save", class: "btn-primary" %>
+  <% end %>
+</div>

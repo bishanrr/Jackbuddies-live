@@ -1,0 +1,9 @@
+<div class="card text-center">
+  <h2 class="text-2xl font-bold text-slate-900">Awaiting Admin Approval</h2>
+  <p class="mt-2 text-slate-600">Your account is pending review. You will get access immediately after approval.</p>
+  <% if current_user.denied? %>
+    <p class="mt-4 rounded-xl bg-rose-100 p-3 text-rose-700">Status: denied. <%= current_user.denial_reason %></p>
+  <% else %>
+    <p class="mt-4 rounded-xl bg-amber-100 p-3 text-amber-700">Status: pending</p>
+  <% end %>
+</div>

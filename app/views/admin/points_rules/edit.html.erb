@@ -1,0 +1,12 @@
+<div class="card max-w-xl">
+  <h2 class="section-title mb-4">Points Rules - <%= @season.year %></h2>
+  <%= form_with url: admin_points_rule_path(@season, season_id: @season.id), method: :patch, local: true, class: "space-y-4" do %>
+    <% Match.stages.keys.each do |stage| %>
+      <div>
+        <label class="block text-sm font-medium capitalize"><%= stage %> points</label>
+        <input name="rules[<%= stage %>]" type="number" value="<%= @rules[stage] %>" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+      </div>
+    <% end %>
+    <button type="submit" class="btn-primary">Save Rules</button>
+  <% end %>
+</div>

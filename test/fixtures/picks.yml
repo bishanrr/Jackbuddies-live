@@ -1,0 +1,4 @@
+first_pick:
+  user: approved_user
+  match: upcoming
+  team: one

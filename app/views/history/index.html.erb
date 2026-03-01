@@ -1,0 +1,40 @@
+<% content_for :title, "History" %>
+
+<div class="card">
+  <div class="mb-4 flex flex-wrap items-center gap-2">
+    <h2 class="section-title mr-2">History Snapshot</h2>
+    <%= form_with url: history_path, method: :get, local: true, class: "flex items-center gap-2" do %>
+      <%= hidden_field_tag :season_id, current_season.id %>
+      <%= select_tag :user_id, options_from_collection_for_select(User.approved.order(:display_name, :email), :id, :name_or_email, @selected_user.id), class: "rounded-xl border border-slate-300 px-3 py-2 text-sm" %>
+      <%= submit_tag "View", class: "btn-secondary" %>
+    <% end %>
+  </div>
+
+  <p class="muted">Viewing <strong><%= @selected_user.name_or_email %></strong> in season <strong><%= current_season.year %></strong>.</p>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <div>
+      <h3 class="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">Leaderboard Snapshot</h3>
+      <div class="rounded-xl border border-slate-200 p-3">
+        <% @leaderboard.first(8).each do |row| %>
+          <div class="flex items-center justify-between border-b border-slate-100 py-2 text-sm last:border-0">
+            <span>#<%= row.rank %> <%= row.user.name_or_email %></span>
+            <span class="font-semibold"><%= row.points %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">Picks</h3>
+      <div class="rounded-xl border border-slate-200 p-3">
+        <% @picks.first(12).each do |pick| %>
+          <div class="flex items-center justify-between border-b border-slate-100 py-2 text-sm last:border-0">
+            <span><%= pick.match.home_team.short_name %> vs <%= pick.match.away_team.short_name %></span>
+            <span class="font-semibold"><%= pick.team.short_name %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

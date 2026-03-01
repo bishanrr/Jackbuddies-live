@@ -1,0 +1,86 @@
+<% content_for :title, "Leaderboard" %>
+<div class="space-y-8">
+  <div class="flex flex-wrap gap-2">
+    <%= link_to "Table",
+        leaderboard_path(season_id: current_season&.id, view: "table"),
+        class: "rounded-full px-3 py-1 text-sm font-semibold #{@leaderboard_view == 'table' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" %>
+    <%= link_to "Graphs",
+        leaderboard_path(season_id: current_season&.id, view: "graphs"),
+        class: "rounded-full px-3 py-1 text-sm font-semibold #{@leaderboard_view == 'graphs' ? 'bg-emerald-700 text-white' : 'bg-emerald-100 text-emerald-900 hover:bg-emerald-200'}" %>
+  </div>
+
+  <% if @leaderboard_view == "graphs" %>
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="card">
+        <h2 class="section-title mb-3">Total Points by Player</h2>
+        <%= column_chart @chart_points_by_user, height: "320px", colors: ["#0284c7"] %>
+      </div>
+      <div class="card">
+        <h2 class="section-title mb-3">Accuracy by Player (%)</h2>
+        <%= bar_chart @chart_accuracy_by_user, height: "320px", colors: ["#16a34a"] %>
+      </div>
+      <div class="card">
+        <h2 class="section-title mb-3">Correct Picks vs Total Picks</h2>
+        <%= column_chart @chart_picks_by_user, height: "320px", colors: ["#f59e0b", "#475569"] %>
+      </div>
+      <div class="card">
+        <h2 class="section-title mb-3">Cumulative Points Trend (Top 6)</h2>
+        <%= line_chart @chart_cumulative_points_by_user, height: "320px", points: false, curve: false, colors: ["#2563eb", "#dc2626", "#16a34a", "#9333ea", "#ea580c", "#0891b2"] %>
+      </div>
+    </div>
+  <% else %>
+    <div class="card overflow-x-auto">
+      <h2 class="section-title mb-4">Season <%= current_season.year %> Leaderboard</h2>
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+            <th class="py-2">Rank</th><th class="py-2">User</th><th class="py-2">Points</th><th class="py-2">Accuracy</th><th class="py-2">Correct Picks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @rows.each do |row| %>
+            <tr class="border-b border-slate-100">
+              <td class="py-3 font-semibold">#<%= row.rank %></td>
+              <td class="py-3 text-slate-900"><%= row.user.name_or_email %></td>
+              <td class="py-3"><span class="rounded-full bg-slate-900 px-2 py-1 text-xs font-semibold text-white"><%= row.points %></span></td>
+              <td class="py-3"><%= row.accuracy %>%</td>
+              <td class="py-3"><%= row.correct_picks %>/<%= row.completed_picks %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card overflow-x-auto">
+      <h2 class="section-title mb-4">Match-by-Match Points</h2>
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+            <th class="py-2">No.</th>
+            <th class="py-2">Date</th>
+            <th class="py-2">Match</th>
+            <th class="py-2">Winner</th>
+            <th class="py-2">Total Points</th>
+            <% @users.each do |user| %>
+              <th class="py-2"><%= user.name_or_email %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @matches.each do |match| %>
+            <tr class="border-b border-slate-100">
+              <td class="py-3"><%= @display_match_no_by_match_id[match.id] %></td>
+              <td class="py-3"><%= match.match_datetime.strftime("%Y-%m-%d") %></td>
+              <td class="py-3"><%= match.home_team.short_name %> vs <%= match.away_team.short_name %></td>
+              <td class="py-3"><%= match.winner_team&.short_name || "-" %></td>
+              <td class="py-3 font-semibold"><%= @total_points_by_match_id[match.id] || 0 %></td>
+              <% @users.each do |user| %>
+                <td class="py-3"><%= @points_by_match_user[[match.id, user.id]] || 0 %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

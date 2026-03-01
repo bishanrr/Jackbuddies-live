@@ -1,0 +1,7 @@
+upcoming:
+  season: season_2026
+  home_team: one
+  away_team: two
+  match_datetime: <%= 2.days.from_now %>
+  stage: 0
+  status: 0

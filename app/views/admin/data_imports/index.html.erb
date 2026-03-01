@@ -1,0 +1,25 @@
+<% content_for :title, "Data Imports" %>
+
+<div class="card max-w-3xl">
+  <h2 class="section-title">Data Imports</h2>
+  <p class="mt-3 text-sm text-slate-600">
+    Place the following CSV files under <code>Rails.root/data</code>:
+    <code>ipl_2025_matches.csv</code>, <code>ipl_2025_users.csv</code>, <code>ipl_2025_user_points.csv</code>
+    (optional: <code>ipl_2025_team_stats.csv</code>).
+  </p>
+
+  <div class="mt-4 rounded-xl bg-slate-100 p-4 text-sm">
+    <p class="font-semibold text-slate-800">CLI command</p>
+    <code class="mt-1 inline-block"><%= @command %></code>
+  </div>
+
+  <% if Rails.env.development? %>
+    <div class="mt-6">
+      <%= button_to "Run IPL 2025 Import", admin_data_imports_path(season_id: current_season&.id), method: :post, class: "btn-primary", data: { turbo_confirm: "Run IPL 2025 import now?" } %>
+    </div>
+  <% else %>
+    <p class="mt-6 text-sm text-amber-700">
+      In non-development environments, run the import via terminal command shown above.
+    </p>
+  <% end %>
+</div>

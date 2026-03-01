@@ -1,0 +1,188 @@
+<% content_for :title, "Matches" %>
+
+<div class="matches-page space-y-8">
+  <% if @show_match_tabs %>
+    <div class="flex items-center gap-2">
+      <%= link_to "League",
+          matches_path(season_id: current_season.id, view: "league"),
+          class: "rounded-full px-3 py-1 text-sm font-semibold #{@matches_view == 'league' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" %>
+      <%= link_to "Playoffs",
+          matches_path(season_id: current_season.id, view: "playoffs"),
+          class: "rounded-full px-3 py-1 text-sm font-semibold #{@matches_view == 'playoffs' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" %>
+      <%= link_to "Points",
+          matches_path(season_id: current_season.id, view: "points"),
+          class: "rounded-full px-3 py-1 text-sm font-semibold #{@matches_view == 'points' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" %>
+    </div>
+  <% end %>
+
+  <% if @upcoming_matches.any? %>
+    <section>
+      <h2 class="section-title">Upcoming</h2>
+      <div class="mt-4 grid gap-4 lg:grid-cols-2">
+        <% @upcoming_matches.each do |match| %>
+          <% pick = @picks_by_match_id[match.id] %>
+          <div class="card">
+            <div class="flex items-center justify-between">
+              <p class="font-semibold"><%= match.home_team.name %> vs <%= match.away_team.name %></p>
+              <span class="rounded-full px-2 py-1 text-xs font-semibold <%= stage_badge_class(match.stage) %>"><%= match.stage.titleize %></span>
+            </div>
+            <p class="mt-1 text-sm text-slate-500"><%= match.match_datetime.strftime("%b %d, %Y %I:%M %p") %></p>
+            <p class="mt-1 text-xs <%= match.locked? ? 'text-rose-600' : 'text-emerald-600' %>">
+              <%= match.locked? ? 'Locked' : "Locks at #{match.lock_time.strftime('%I:%M %p')}" %>
+            </p>
+
+            <div class="mt-4">
+              <% if match.locked? %>
+                <p class="text-sm text-slate-600">Your pick: <span class="font-semibold"><%= pick&.team&.short_name || "No pick" %></span></p>
+              <% else %>
+                <%= form_with model: (pick || Pick.new), url: pick ? pick_path(pick) : picks_path, method: pick ? :patch : :post, local: true, class: "space-y-2" do |f| %>
+                  <%= f.hidden_field :match_id, value: match.id %>
+                  <%= f.select :team_id, [[match.home_team.name, match.home_team_id], [match.away_team.name, match.away_team_id]], { selected: pick&.team_id, prompt: "Choose a team" }, class: "w-full rounded-xl border border-slate-300 px-3 py-2" %>
+                  <%= f.submit(pick ? "Update Pick" : "Save Pick", class: "btn-primary w-full") %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @matches_view == "points" %>
+    <section class="space-y-6">
+      <div class="card">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="section-title">Player Points Summary</h2>
+          <%= form_with url: matches_path, method: :get, local: true, class: "flex items-center gap-2" do %>
+            <%= hidden_field_tag :season_id, current_season.id %>
+            <%= hidden_field_tag :view, "points" %>
+            <%= select_tag :player, options_for_select([["All", "all"]] + @points_players.map { |name| [name, name] }, @selected_player), class: "rounded-xl border border-slate-300 px-3 py-2 text-sm", onchange: "this.form.requestSubmit()" %>
+          <% end %>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="jb-table min-w-full text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th class="py-2">Player</th>
+                <th class="py-2">League Total</th>
+                <th class="py-2">Playoff Total</th>
+                <th class="py-2">Grand Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @player_summary_rows.each do |row| %>
+                <tr class="border-b border-slate-100 <%= row[:player] == @selected_player ? 'bg-slate-50' : '' %>">
+                  <td class="py-3 font-medium"><%= row[:player] %></td>
+                  <td class="py-3"><%= row[:league_total] %></td>
+                  <td class="py-3"><%= row[:playoff_total] %></td>
+                  <td class="py-3"><span class="rounded-full bg-slate-900 px-2 py-1 text-xs font-semibold text-white"><%= row[:grand_total] %></span></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card overflow-x-auto">
+        <h2 class="section-title mb-4"><%= @selected_player == "all" ? "All Players Match Points" : "#{@selected_player} Match Points" %></h2>
+        <table class="jb-table min-w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+              <th class="py-2">Match</th>
+              <th class="py-2">Match Total</th>
+              <th class="py-2">Accumulated Total</th>
+              <% if @selected_player == "all" %>
+                <th class="py-2">Points Paid</th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @selected_player_rows.each do |row| %>
+              <tr class="border-b border-slate-100">
+                <td class="py-3"><%= row[:label] %></td>
+                <td class="py-3"><%= row[:points] %></td>
+                <td class="py-3"><%= row[:cumulative] %></td>
+                <% if @selected_player == "all" %>
+                  <td class="py-3"><%= row[:points_paid] %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  <% else %>
+  <section>
+    <h2 class="section-title"><%= @matches_view == "playoffs" ? "Playoffs" : "Completed" %></h2>
+    <div class="mt-4 overflow-x-auto card">
+      <table class="jb-table min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+            <th class="py-2">Match No</th><th class="py-2">Match</th><th class="py-2">Stage</th><th class="py-2">Winner</th><th class="py-2">Winner Names</th><th class="py-2">Your Pick</th><th class="py-2">Pick Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% table_rows =
+              if @matches_view == "playoffs"
+                @playoff_rows.map do |row|
+                  {
+                    match: row[:match],
+                    display_match_no: row[:label],
+                    winner_names: row[:winner_names],
+                    winner_data_present: row[:winner_data_present]
+                  }
+                end
+              else
+                @completed_matches.map do |match|
+                  {
+                    match: match,
+                    display_match_no: @display_match_no_by_match_id[match.id] || match.match_no,
+                    winner_names: @winner_names_by_match_id[match.id] || [],
+                    winner_data_present: @winner_data_present_by_match_id[match.id]
+                  }
+                end
+              end %>
+          <% table_rows.each do |row| %>
+            <% match = row[:match] %>
+            <% pick = @picks_by_match_id[match.id] %>
+            <% winner_names = row[:winner_names] %>
+            <% display_match_no = row[:display_match_no] %>
+            <% winner_data_present = row[:winner_data_present] %>
+            <tr class="border-b border-slate-100">
+              <td class="py-3"><%= display_match_no || "-" %></td>
+              <td class="py-3"><%= match.home_team.short_name %> vs <%= match.away_team.short_name %></td>
+              <td class="py-3"><span class="rounded-full px-2 py-1 text-xs font-semibold <%= stage_badge_class(match.stage) %>"><%= match.stage %></span></td>
+              <td class="py-3"><%= match.winner_team&.short_name || "-" %></td>
+              <td class="py-3">
+                <% if winner_names.any? %>
+                  <div class="flex flex-wrap gap-1">
+                    <% winner_names.each do |name| %>
+                      <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700"><%= name %></span>
+                    <% end %>
+                  </div>
+                <% elsif winner_data_present %>
+                  <span class="jackpot-pill">* Big Jackpot *</span>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+              <td class="py-3"><%= pick&.team&.short_name || "No pick" %></td>
+              <td class="py-3">
+                <% if pick&.team_id.present? && match.winner_team_id.present? %>
+                  <% if pick.team_id == match.winner_team_id %>
+                    <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">WON</span>
+                  <% else %>
+                    <span class="rounded-full bg-rose-100 px-2 py-1 text-xs font-semibold text-rose-700">LOST</span>
+                  <% end %>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <% end %>
+</div>

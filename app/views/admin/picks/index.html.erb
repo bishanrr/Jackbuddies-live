@@ -1,0 +1,20 @@
+<div class="card overflow-x-auto">
+  <h2 class="section-title mb-4">Picks</h2>
+  <table class="min-w-full text-sm">
+    <thead>
+      <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+        <th class="py-2">User</th><th class="py-2">Match</th><th class="py-2">Pick</th><th class="py-2"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @picks.each do |pick| %>
+        <tr class="border-b border-slate-100">
+          <td class="py-3"><%= pick.user.name_or_email %></td>
+          <td class="py-3"><%= pick.match.home_team.short_name %> vs <%= pick.match.away_team.short_name %></td>
+          <td class="py-3"><%= pick.team.short_name %></td>
+          <td class="py-3 text-right"><%= link_to "Edit", edit_admin_pick_path(pick, season_id: current_season.id), class: "btn-secondary" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

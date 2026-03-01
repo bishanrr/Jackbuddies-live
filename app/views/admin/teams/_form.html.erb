@@ -1,0 +1,14 @@
+<div class="card max-w-xl">
+  <h2 class="section-title mb-4"><%= team.new_record? ? "New Team" : "Edit Team" %></h2>
+  <%= form_with model: [:admin, team], local: true, class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :name, class: "block text-sm font-medium" %>
+      <%= f.text_field :name, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :short_name, class: "block text-sm font-medium" %>
+      <%= f.text_field :short_name, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <%= f.submit "Save", class: "btn-primary" %>
+  <% end %>
+</div>

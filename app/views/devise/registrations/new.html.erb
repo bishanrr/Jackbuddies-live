@@ -1,0 +1,24 @@
+<div class="card">
+  <h2 class="mb-4 text-xl font-bold">Create account</h2>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4" }) do |f| %>
+    <div>
+      <%= f.label :display_name, class: "block text-sm font-medium" %>
+      <%= f.text_field :display_name, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+      <p class="mt-1 text-xs text-slate-500">Use your first name to help admin match your signup quickly.</p>
+    </div>
+    <div>
+      <%= f.label :email, class: "block text-sm font-medium" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :password, class: "block text-sm font-medium" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :password_confirmation, class: "block text-sm font-medium" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <%= f.submit "Sign up", class: "btn-primary w-full" %>
+  <% end %>
+  <%= render "devise/shared/links" %>
+</div>

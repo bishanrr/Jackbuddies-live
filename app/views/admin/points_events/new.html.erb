@@ -1,0 +1,18 @@
+<div class="card max-w-xl">
+  <h2 class="section-title mb-4">Manual Points Adjustment</h2>
+  <%= form_with model: [:admin, @event], local: true, class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :user_id, class: "block text-sm font-medium" %>
+      <%= f.collection_select :user_id, @users, :id, :name_or_email, {}, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :points, class: "block text-sm font-medium" %>
+      <%= f.number_field :points, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :reason, class: "block text-sm font-medium" %>
+      <%= f.text_field :reason, class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <%= f.submit "Add Adjustment", class: "btn-primary" %>
+  <% end %>
+</div>

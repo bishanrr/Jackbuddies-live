@@ -1,0 +1,64 @@
+<% content_for :title, "Users" %>
+<% if current_season&.year == 2025 %>
+  <div class="card mb-6">
+    <h2 class="section-title mb-4">2025 Approved Users</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+            <th class="py-2">Name</th>
+            <th class="py-2">Account</th>
+            <th class="py-2">Matches Won</th>
+            <th class="py-2">Matches Lost</th>
+            <th class="py-2">Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users_2025.each do |row| %>
+            <tr class="border-b border-slate-100">
+              <td class="py-3 font-medium"><%= row[:name] %></td>
+              <td class="py-3">
+                <% if row[:account_created] %>
+                  <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">Created</span>
+                <% else %>
+                  <span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">Missing</span>
+                <% end %>
+              </td>
+              <td class="py-3"><%= row[:account_created] ? row[:matches_won] : "-" %></td>
+              <td class="py-3"><%= row[:account_created] ? row[:matches_lost] : "-" %></td>
+              <td class="py-3"><%= row[:user]&.email || "-" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<div class="card">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="section-title">Users</h2>
+    <%= form_with url: users_path, method: :get, local: true do %>
+      <%= hidden_field_tag :season_id, current_season.id %>
+      <%= text_field_tag :q, params[:q], placeholder: "Search name or email", class: "rounded-xl border border-slate-300 px-3 py-2 text-sm" %>
+    <% end %>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead>
+        <tr class="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+          <th class="py-2">Name</th><th class="py-2">Email</th><th class="py-2">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr class="border-b border-slate-100">
+            <td class="py-3"><%= link_to user.name_or_email, user_path(user, season_id: current_season.id), class: "hover:underline" %></td>
+            <td class="py-3"><%= user.email %></td>
+            <td class="py-3"><span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700"><%= user.status %></span></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

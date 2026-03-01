@@ -1,0 +1,20 @@
+admin:
+  email: admin@test.local
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'Password123!') %>
+  display_name: Admin
+  role: 1
+  status: 1
+
+pending_user:
+  email: pending@test.local
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'Password123!') %>
+  display_name: Pending
+  role: 0
+  status: 0
+
+approved_user:
+  email: approved@test.local
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'Password123!') %>
+  display_name: Approved
+  role: 0
+  status: 1

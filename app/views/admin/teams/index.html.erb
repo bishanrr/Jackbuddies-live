@@ -1,0 +1,17 @@
+<div class="card">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="section-title">Teams</h2>
+    <%= link_to "New Team", new_admin_team_path(season_id: current_season.id), class: "btn-primary" %>
+  </div>
+  <div class="space-y-2">
+    <% @teams.each do |team| %>
+      <div class="flex items-center justify-between rounded-xl border border-slate-200 p-3">
+        <span class="font-semibold"><%= team.name %> (<%= team.short_name %>)</span>
+        <div class="flex gap-2">
+          <%= link_to "Edit", edit_admin_team_path(team, season_id: current_season.id), class: "btn-secondary" %>
+          <%= button_to "Delete", admin_team_path(team, season_id: current_season.id), method: :delete, class: "btn-secondary", data: { turbo_confirm: "Delete team?" } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

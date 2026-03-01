@@ -1,0 +1,68 @@
+<div
+  class="gp-widget"
+  data-controller="gold-pot"
+  data-gold-pot-current-value-value="<%= current_value.to_i %>"
+  data-gold-pot-max-value-value="<%= [max_value.to_i, 1].max %>"
+>
+  <div class="gp-scene">
+    <div class="gp-pot-glow"></div>
+    <div class="gp-pot-wrap">
+      <svg viewBox="0 0 260 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="gpPotBody" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#e8a800"/>
+            <stop offset="40%" stop-color="#c87800"/>
+            <stop offset="100%" stop-color="#5c3000"/>
+          </radialGradient>
+          <radialGradient id="gpPotRim" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffe680"/>
+            <stop offset="50%" stop-color="#f5c842"/>
+            <stop offset="100%" stop-color="#9c6200"/>
+          </radialGradient>
+          <radialGradient id="gpPotInner" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#3d2000aa"/>
+            <stop offset="100%" stop-color="#1a0e00ee"/>
+          </radialGradient>
+          <linearGradient id="gpPotShine" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffe68044"/>
+            <stop offset="50%" stop-color="transparent"/>
+            <stop offset="100%" stop-color="#00000033"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="130" cy="278" rx="55" ry="12" fill="#5c3000"/>
+        <rect x="85" y="266" width="90" height="14" rx="7" fill="url(#gpPotBody)"/>
+        <ellipse cx="130" cy="266" rx="45" ry="8" fill="#e8a800"/>
+        <path d="M 60 160 Q 45 220 80 255 Q 110 275 130 276 Q 150 275 180 255 Q 215 220 200 160 Z" fill="url(#gpPotBody)"/>
+        <path d="M 75 165 Q 65 210 90 245 Q 105 262 115 265" stroke="#ffe68055" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M 85 105 L 75 160 L 185 160 L 175 105 Z" fill="url(#gpPotBody)"/>
+        <ellipse cx="130" cy="105" rx="65" ry="16" fill="url(#gpPotRim)"/>
+        <ellipse cx="130" cy="105" rx="55" ry="11" fill="url(#gpPotInner)"/>
+        <path d="M 80 155 Q 130 165 180 155" stroke="#ffe680" stroke-width="3" fill="none" opacity="0.5"/>
+        <path d="M 78 148 Q 130 158 182 148" stroke="#ffb300" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <path d="M 62 140 Q 30 135 32 165 Q 34 185 62 180" stroke="url(#gpPotBody)" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M 198 140 Q 230 135 228 165 Q 226 185 198 180" stroke="url(#gpPotBody)" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M 62 140 Q 30 135 32 165 Q 34 185 62 180" stroke="#e8a80066" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M 198 140 Q 230 135 228 165 Q 226 185 198 180" stroke="#e8a80066" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M 60 160 Q 45 220 80 255 Q 110 275 130 276 Q 150 275 180 255 Q 215 220 200 160 Z" fill="url(#gpPotShine)"/>
+      </svg>
+    </div>
+
+    <div class="gp-fill-area">
+      <div class="gp-fill-liquid" data-gold-pot-target="fillLiquid"></div>
+    </div>
+    <div class="gp-coins-container" data-gold-pot-target="coins"></div>
+  </div>
+
+  <div class="gp-amount-wrap">
+    <div class="gp-amount-label"><%= title_text %></div>
+    <div class="gp-amount-value" data-gold-pot-target="amountValue">₹ 0</div>
+  </div>
+
+  <div class="gp-progress-wrap">
+    <div class="gp-progress-track">
+      <div class="gp-progress-fill" data-gold-pot-target="progressFill"></div>
+    </div>
+    <div class="gp-progress-pct" data-gold-pot-target="progressPct">0%</div>
+    <div class="gp-progress-meta"><%= subtitle_text %></div>
+  </div>
+</div>
