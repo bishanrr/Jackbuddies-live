@@ -62,7 +62,10 @@ COPY . .
 RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 \
+    SECRET_KEY_BASE=build_dummy_secret_key_base \
+    DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres \
+    ./bin/rails assets:precompile --trace
 
 
 RUN rm -rf node_modules
