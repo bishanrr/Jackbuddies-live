@@ -131,7 +131,7 @@ def admin_name
 end
 
 def admin_email
-  ENV.fetch("DEFAULT_ADMIN_EMAIL", "bishan@jackbuddies.local").downcase
+  ENV.fetch("DEFAULT_ADMIN_EMAIL", "vigrahalabishan3@gmail.com").downcase
 end
 
 def admin_password

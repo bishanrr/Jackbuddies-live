@@ -79,7 +79,7 @@ season_year,match_no,user_name,points
 
 ## Seed Accounts
 - Admin:
-  - Email: `DEFAULT_ADMIN_EMAIL` if set, otherwise `bishan@jackbuddies.local`
+  - Email: `DEFAULT_ADMIN_EMAIL` if set, otherwise `vigrahalabishan3@gmail.com`
   - Password: `DEFAULT_ADMIN_PASSWORD` if set, otherwise `Password123!`
 - Signup allowlist (first names):
   - `Sreekanth`, `Praveen`, `Prasad`, `Bishan`, `Sunny`, `Akil`, `Arun`, `Raghu`, `Naveen`, `Gopi`
