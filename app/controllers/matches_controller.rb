@@ -5,6 +5,20 @@ class MatchesController < ApplicationController
   def index
     authorize Match
     @matches_view = %w[league playoffs points].include?(params[:view].to_s) ? params[:view].to_s : "league"
+    @show_match_tabs = false
+    @upcoming_matches = Match.none
+    @completed_matches = Match.none
+    @playoff_rows = []
+    @points_players = []
+    @selected_player = "all"
+    @selected_player_rows = []
+    @player_summary_rows = []
+    @display_match_no_by_match_id = {}
+    @winner_names_by_match_id = {}
+    @winner_data_present_by_match_id = {}
+    @picks_by_match_id = {}
+    return unless current_season
+
     @show_match_tabs = current_season.matches.exists?
     season_points_data = player_points_data_for_current_season
     season_winners_present = winners_rows.present?

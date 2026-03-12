@@ -4,6 +4,18 @@ class LeaderboardsController < ApplicationController
   def index
     authorize :leaderboard, :show?
     @leaderboard_view = %w[table graphs].include?(params[:view].to_s) ? params[:view].to_s : "table"
+    @users = []
+    @rows = []
+    @matches = Match.none
+    @display_match_no_by_match_id = {}
+    @points_by_match_user = {}
+    @total_points_by_match_id = {}
+    @chart_points_by_user = {}
+    @chart_accuracy_by_user = {}
+    @chart_picks_by_user = []
+    @chart_cumulative_points_by_user = []
+    return unless current_season
+
     points_data = current_season&.year == 2025 ? player_points_data_2025 : {}
     @users = users_for_display(points_data)
     @rows = rows_for_display(@users)

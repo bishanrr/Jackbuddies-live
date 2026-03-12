@@ -1,6 +1,12 @@
 <% content_for :title, "Matches" %>
 
 <div class="matches-page space-y-8">
+  <% if current_season.blank? %>
+    <div class="card">
+      <h2 class="section-title mb-2">No Seasons Loaded Yet</h2>
+      <p class="muted">Run `bin/rails db:seed` in production to load the bundled 2024 and 2025 match data.</p>
+    </div>
+  <% else %>
   <% if @show_match_tabs %>
     <div class="flex items-center gap-2">
       <%= link_to "League",
@@ -184,5 +190,6 @@
       </table>
     </div>
   </section>
+  <% end %>
   <% end %>
 </div>

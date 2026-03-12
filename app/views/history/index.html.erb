@@ -1,6 +1,10 @@
 <% content_for :title, "History" %>
 
 <div class="card">
+  <% if current_season.blank? %>
+    <h2 class="section-title mb-2">No Seasons Loaded Yet</h2>
+    <p class="muted">Run `bin/rails db:seed` in production to load the bundled historical data.</p>
+  <% else %>
   <div class="mb-4 flex flex-wrap items-center gap-2">
     <h2 class="section-title mr-2">History Snapshot</h2>
     <%= form_with url: history_path, method: :get, local: true, class: "flex items-center gap-2" do %>
@@ -37,4 +41,5 @@
       </div>
     </div>
   </div>
+  <% end %>
 </div>

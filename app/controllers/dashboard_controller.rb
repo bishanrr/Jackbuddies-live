@@ -1,6 +1,15 @@
 class DashboardController < ApplicationController
   def index
     authorize :dashboard, :show?
+    @pot_context_year = current_season&.year
+    @pot_max = 0
+    @pot_display_total = 0
+    @winner = nil
+    @runner_up = nil
+    @top_two = []
+    @least_paid = nil
+    @second_least_paid = nil
+    @jackpot_total = 0
     return unless current_season
 
     @pot_context_year = current_season.year.to_i

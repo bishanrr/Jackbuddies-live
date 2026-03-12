@@ -3,6 +3,11 @@ class HistoryController < ApplicationController
     authorize :history, :show?
 
     @selected_user = User.approved.find_by(id: params[:user_id]) || current_user
+    @leaderboard = []
+    @stats = nil
+    @picks = []
+    return unless current_season
+
     @leaderboard = LeaderboardQuery.call(current_season)
     @stats = SeasonStatsQuery.call(user: @selected_user, season: current_season)
     @picks = @selected_user.picks

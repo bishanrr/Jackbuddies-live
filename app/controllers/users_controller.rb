@@ -24,6 +24,11 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     authorize @user
 
+    @stats = nil
+    @picks = []
+    @points_by_match_id = {}
+    return unless current_season
+
     @stats = SeasonStatsQuery.call(user: @user, season: current_season)
     @picks = @user.picks
       .joins(:match)

@@ -1,5 +1,11 @@
 <% content_for :title, "Leaderboard" %>
 <div class="space-y-8">
+  <% if current_season.blank? %>
+    <div class="card">
+      <h2 class="section-title mb-2">No Seasons Loaded Yet</h2>
+      <p class="muted">Run `bin/rails db:seed` in production to load the bundled leaderboard data.</p>
+    </div>
+  <% else %>
   <div class="flex flex-wrap gap-2">
     <%= link_to "Table",
         leaderboard_path(season_id: current_season&.id, view: "table"),
@@ -82,5 +88,6 @@
         </tbody>
       </table>
     </div>
+  <% end %>
   <% end %>
 </div>

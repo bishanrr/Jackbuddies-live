@@ -1,5 +1,10 @@
 class HomeController < ApplicationController
   def index
+    @current_season_total = 0
+    @previous_season_total = 0
+    @target_max = 1
+    @display_total = 0
+    @overflow_points = 0
     return unless current_season
 
     @current_season_total = season_total_points(current_season)
