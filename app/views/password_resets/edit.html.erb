@@ -1,0 +1,22 @@
+<div class="card">
+  <h2 class="mb-4 text-xl font-bold">Change Password</h2>
+  <p class="mb-4 text-sm text-slate-600">Enter your email and choose a new password.</p>
+
+  <%= form_with url: password_reset_path, method: :patch, local: true, class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :email, class: "block text-sm font-medium" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :password, "New password", class: "block text-sm font-medium" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <div>
+      <%= f.label :password_confirmation, class: "block text-sm font-medium" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <%= f.submit "Update password", class: "btn-primary w-full" %>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</div>

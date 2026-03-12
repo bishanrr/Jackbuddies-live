@@ -1,8 +1,9 @@
 <div class="mt-4 text-center text-sm text-slate-600">
+  <%= link_to "Forgot password?", new_password_reset_path, class: "hover:underline" %>
   <% if controller_name != 'sessions' %>
-    <%= link_to "Sign in", new_session_path(resource_name), class: "hover:underline" %>
+    <%= link_to "Sign in", new_user_session_path, class: "ml-4 hover:underline" %>
   <% end %>
-  <% if devise_mapping.registerable? && controller_name != 'registrations' %>
-    <%= link_to "Create account", new_registration_path(resource_name), class: "ml-4 hover:underline" %>
+  <% if controller_name != 'registrations' %>
+    <%= link_to "Create account", new_user_registration_path, class: "ml-4 hover:underline" %>
   <% end %>
 </div>

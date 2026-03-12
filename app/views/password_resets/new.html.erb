@@ -1,0 +1,14 @@
+<div class="card">
+  <h2 class="mb-4 text-xl font-bold">Forgot Password</h2>
+  <p class="mb-4 text-sm text-slate-600">Enter the secret code to unlock password reset.</p>
+
+  <%= form_with url: verify_password_reset_path, method: :post, local: true, class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :secret_code, "Secret code", class: "block text-sm font-medium" %>
+      <%= f.password_field :secret_code, autocomplete: "one-time-code", class: "mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" %>
+    </div>
+    <%= f.submit "Continue", class: "btn-primary w-full" %>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</div>

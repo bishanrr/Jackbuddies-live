@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   get "home", to: "home#index", as: :home
   get "awaiting-approval", to: "approvals#show", as: :awaiting_approval
+  resource :password_reset, only: [:new, :edit, :update], controller: "password_resets" do
+    post :verify
+  end
   get "leaderboard", to: "leaderboards#index", as: :leaderboard
   get "history", to: "history#index", as: :history
 
