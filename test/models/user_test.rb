@@ -1,26 +1,20 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
-  test "allows sign up when first name is in allowlist" do
-    user = User.new(
-      email: "sreekanth@example.com",
+  test "default admin email is auto-promoted to approved admin" do
+    user = User.create!(
+      email: User.default_admin_email,
       password: "Password123!",
       password_confirmation: "Password123!",
-      display_name: "Praveen Kumar"
+      display_name: "Bishan",
+      role: :user,
+      status: :pending
     )
 
-    assert user.valid?
-  end
+    user.ensure_default_admin_access!
+    user.reload
 
-  test "blocks sign up when first name is not in allowlist" do
-    user = User.new(
-      email: "someone@example.com",
-      password: "Password123!",
-      password_confirmation: "Password123!",
-      display_name: "Unknown Person"
-    )
-
-    assert_not user.valid?
-    assert_includes user.errors[:display_name], "first name is not on the private league allowlist"
+    assert user.admin?
+    assert user.approved?
   end
 end

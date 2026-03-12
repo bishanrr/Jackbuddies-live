@@ -22,6 +22,29 @@ class User < ApplicationRecord
 
   validates :display_name, length: { maximum: 80 }, allow_blank: true
 
+  def self.default_admin_email
+    ENV.fetch("DEFAULT_ADMIN_EMAIL", "vigrahalabishan3@gmail.com").downcase
+  end
+
+  def default_admin_email?
+    email.to_s.downcase == self.class.default_admin_email
+  end
+
+  def ensure_default_admin_access!
+    return unless default_admin_email?
+    return if admin? && approved?
+
+    update!(
+      display_name: display_name.presence || "Bishan",
+      role: :admin,
+      status: :approved,
+      approved_at: approved_at || Time.current,
+      denied_at: nil,
+      denied_by: nil,
+      denial_reason: nil
+    )
+  end
+
   def name_or_email
     display_name.presence || email
   end

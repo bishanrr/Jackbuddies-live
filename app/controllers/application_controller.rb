@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   before_action :authenticate_user!
+  before_action :ensure_default_admin_access!
   before_action :set_current_season
   before_action :ensure_approved_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -15,6 +16,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def after_sign_in_path_for(resource)
+    resource.ensure_default_admin_access! if resource.respond_to?(:ensure_default_admin_access!)
     return awaiting_approval_path unless resource.approved?
 
     home_path
@@ -50,6 +52,12 @@ class ApplicationController < ActionController::Base
     selected_id = params[:season_id].presence || session[:season_id]
     @current_season = Season.find_by(id: selected_id) || default_season
     session[:season_id] = @current_season&.id
+  end
+
+  def ensure_default_admin_access!
+    return unless user_signed_in?
+
+    current_user.ensure_default_admin_access!
   end
 
   def default_season
