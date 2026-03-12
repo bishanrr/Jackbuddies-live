@@ -79,11 +79,17 @@ season_year,match_no,user_name,points
 
 ## Seed Accounts
 - Admin:
-  - Email: `bishan@jackbuddies.local`
-  - Password: `Password123!`
+  - Email: `DEFAULT_ADMIN_EMAIL` if set, otherwise `bishan@jackbuddies.local`
+  - Password: `DEFAULT_ADMIN_PASSWORD` if set, otherwise `Password123!`
 - Signup allowlist (first names):
   - `Sreekanth`, `Praveen`, `Prasad`, `Bishan`, `Sunny`, `Akil`, `Arun`, `Raghu`, `Naveen`, `Gopi`
   - Used as a reference list for admin matching; signup is still allowed for other names and remains pending admin approval.
+
+## Bundled Historical Data
+- `bin/rails db:seed` loads bundled season data for `2024`, `2025`, and creates the `2026` season shell.
+- `2024` is seeded from the checked-in files under [data](/Users/bishanvigrahala/jackbuddies/data).
+- `2025` is seeded from the checked-in files under [config](/Users/bishanvigrahala/jackbuddies/config).
+- The seed is idempotent, so rerunning it updates bundled records instead of deleting and recreating them.
 
 ## Scoring Rules (per season, editable in Admin)
 - League: correct pick = 2

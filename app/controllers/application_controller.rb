@@ -48,8 +48,18 @@ class ApplicationController < ActionController::Base
     return unless user_signed_in?
 
     selected_id = params[:season_id].presence || session[:season_id]
-    @current_season = Season.find_by(id: selected_id) || Season.order(year: :desc).first
+    @current_season = Season.find_by(id: selected_id) || default_season
     session[:season_id] = @current_season&.id
+  end
+
+  def default_season
+    current_year = Time.zone.today.year
+    current_year_season = Season.find_by(year: current_year)
+
+    return current_year_season if current_year_season&.matches&.exists?
+
+    Season.joins(:matches).where(matches: { status: Match.statuses[:completed] }).distinct.order(year: :desc).first ||
+      Season.order(year: :desc).first
   end
 
   def ensure_approved_user!

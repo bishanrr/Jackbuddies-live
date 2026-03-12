@@ -13,33 +13,32 @@ class LeaderboardQuery
   end
 
   def call
+    return [] unless season
+
     points_data = season_2025_points_data
     winners_rows = season_winners_rows
     winners_total_matches = winners_rows.size
     winners_by_user = winners_by_user_name(winners_rows)
     player_wins_data = season_player_wins_data
     wins_from_data_by_user = wins_count_by_user_name_from_data(player_wins_data)
+    users = User.approved.to_a
+    completed_count_by_user_id, correct_count_by_user_id = pick_counts_by_user_id(users)
+    points_by_user_id = total_points_by_user_id(users, points_data)
+    season_completed_matches_count = season.matches.completed.count
 
-    rows = User.approved.map do |user|
+    rows = users.map do |user|
       if wins_from_data_by_user.present?
         correct_count = wins_from_data_by_user[normalize_name(user_name_key(user))].to_i
-        completed_count = season.matches.completed.count
+        completed_count = season_completed_matches_count
       elsif season&.year == 2025 && winners_total_matches.positive?
         correct_count = winners_by_user[normalize_name(user_name_key(user))].to_i
         completed_count = winners_total_matches
       else
-        picks_scope = user.picks.joins(:match).where(matches: { season_id: season.id })
-        completed_scope = picks_scope.where(matches: { status: Match.statuses[:completed] })
-        completed_count = completed_scope.count
-        correct_count = completed_scope.where("picks.team_id = matches.winner_team_id").count
+        completed_count = completed_count_by_user_id[user.id].to_i
+        correct_count = correct_count_by_user_id[user.id].to_i
       end
 
-      points =
-        if points_data
-          total_points_for_user_from_file(user, points_data)
-        else
-          user.points_events.active.where(season: season).sum(:points)
-        end
+      points = points_by_user_id[user.id].to_i
       accuracy = completed_count.positive? ? ((correct_count.to_f / completed_count) * 100).round(1) : 0.0
 
       Row.new(
@@ -123,6 +122,32 @@ class LeaderboardQuery
     league_total = Array(payload["league_segments"]).flatten.map(&:to_i).sum
     knockout_total = %w[Q1 ELIMINATOR Q2 FINAL].sum { |label| payload.dig("knockouts", label).to_i }
     league_total + knockout_total
+  end
+
+  def pick_counts_by_user_id(users)
+    return [{}, {}] if users.blank?
+
+    completed_picks = Pick.joins(:match)
+      .where(user_id: users.map(&:id), matches: { season_id: season.id, status: Match.statuses[:completed] })
+      .where.not(matches: { winner_team_id: nil })
+
+    completed_count_by_user_id = completed_picks.group(:user_id).count
+    correct_count_by_user_id = completed_picks.where("picks.team_id = matches.winner_team_id").group(:user_id).count
+
+    [completed_count_by_user_id, correct_count_by_user_id]
+  end
+
+  def total_points_by_user_id(users, points_data)
+    if points_data
+      users.each_with_object({}) do |user, acc|
+        acc[user.id] = total_points_for_user_from_file(user, points_data)
+      end
+    else
+      PointsEvent.active
+        .where(season: season, user_id: users.map(&:id))
+        .group(:user_id)
+        .sum(:points)
+    end
   end
 
   def user_name_key(user)
