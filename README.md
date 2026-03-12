@@ -37,6 +37,20 @@ bin/rails db:create db:migrate db:seed
 bin/dev
 ```
 
+## Docker Setup
+1. Start the app and PostgreSQL:
+```bash
+docker compose up --build
+```
+2. Open the app at `http://localhost:3000`.
+
+Notes:
+- If your Docker install uses the legacy binary, run `docker-compose up --build` instead.
+- The web container runs `bin/rails db:prepare` automatically on boot.
+- Source code is bind-mounted, so Rails, Tailwind, and esbuild changes reload as you edit.
+- PostgreSQL data is stored in the `postgres_data` Docker volume.
+- To reset everything, run `docker compose down -v`.
+
 ## Import IPL 2025 Data
 1. Place CSV files under `data/`:
    - `data/ipl_2025_matches.csv`
